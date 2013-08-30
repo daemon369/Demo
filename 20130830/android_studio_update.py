@@ -1,11 +1,11 @@
-﻿#-------------------------------------------------------------------------------
+﻿#!/usr/bin/python
+#--------------------------------------------------------------------------
 # Name:        Android Studio Updater
 # Purpose:     update android studio
 #
-# Author:      Rain.Yang
-#
-# Created:     18-08-2013
-#-------------------------------------------------------------------------------
+# Author:      Daemon
+# Created:     30-08-2013
+#--------------------------------------------------------------------------
 from os.path import basename
 from urlparse import urlsplit
 import urllib
