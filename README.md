@@ -1,6 +1,9 @@
 Demo
 ====
 
+2013-09-12
+Android Studio更新工具增加MacOS的支持
+
 2013-08-30
 增加了Android Studio的更新工具。因为Android Studio的更新网站被封锁，因此写了这个工具直接下载patch然后更新。支持Windows和Linux。
 
