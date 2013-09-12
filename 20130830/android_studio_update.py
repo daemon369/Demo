@@ -93,7 +93,7 @@ def main():
     localVerFile = open('build.txt', 'r')
     localVerStr = localVerFile.readline()
     localVerFile.close()
-    #VER_FROM = localVerStr[3:]
+    VER_FROM = localVerStr[3:]
 
     #下载google提供的更新信息xml文件，读取可更新的版本号
     localUpdateXmlName = downloadfile(UPDATE_XML_URL)
