@@ -23,17 +23,12 @@ except ImportError:
 UPDATE_XML_URL = "https://dl.google.com/android/studio/patches/updates.xml"
 #patch下载路径
 PATCH_PATH = "http://dl.google.com/android/studio/patches/AI-"
-VER_FROME = "130.737825"
-VER_TO = "130.795381"
-PATCH_PATH2_LINUX = "-patch-unix.jar"
-PATCH_PATH2_WINDOWS = "-patch-win.jar"
-
-#下载到本地的xml文件路径，更新后删除
-LOCAL_XML_FILE_PATH = "./"
-#下载到本地的patch文件，更新后删除
-LOCAL_PATCH_FILE_PATH = "./"
-FROM = ''
-TO = ''
+PATCH_PATH2 = ""
+VER_FROM = "130.795381"
+VER_TO = "132.809981"
+PATH_LINUX = "unix"
+PATH_WINDOWS = "win"
+PATH_MAC = "mac"
 
 DOWNLOADED_PERCENT = 0
 
@@ -56,7 +51,9 @@ def downloadcb(a, b, c):
     DOWNLOADED_PERCENT = percent
     if 100 < percent:
         percent = 100
-    print "\r%.1f%%"%(percent,) + "          %d/%d"%(a*b,c)
+    downloaded = a*b/1024
+    total = c/1024
+    print "\r%.1f%%"%(percent,) + "          %dk/%dk"%(downloaded,total)
 
 def downloadfile(url,localFileName = None):
     localName = url2name(url)
@@ -69,50 +66,73 @@ def downloadfile(url,localFileName = None):
     f.close()
     return localName
 
-def main():    
+def verifyos():
+    #判断操作系统，目前支持Windows，Linux，MacOS
+    global PATCH_PATH2
     PLATFORM = platform.system()
-
     if 0 == cmp(PLATFORM, "Linux"):
-        PATCH_PATH2 = PATCH_PATH2_LINUX
+        PATCH_PATH2 = PATH_LINUX
     elif 0 == cmp(PLATFORM, "Windows"):
-        PATCH_PATH2 = PATCH_PATH2_WINDOWS
+        PATCH_PATH2 = PATH_WINDOWS
+    elif 0 == cmp (PLATFORM, "Darwin"):
+        PATCH_PATH2 = PATH_MAC
     else:
         print "os not supported..."
+        return False
+    return True
+
+def getdownloadurl(str_from, str_to, str_platform):
+    path = PATCH_PATH + str_from + '-' + str_to + "-patch-" + str_platform + ".jar"
+    return path
+
+def main():
+    if False == verifyos():
         return
-    
+
+    #读取本地Android Studio版本号
     localVerFile = open('build.txt', 'r')
     localVerStr = localVerFile.readline()
     localVerFile.close()
-    VER_FROME = localVerStr[3:]
+    #VER_FROM = localVerStr[3:]
 
-    localName = downloadfile(UPDATE_XML_URL)
-    tree = ET.ElementTree(file=localName)
+    #下载google提供的更新信息xml文件，读取可更新的版本号
+    localUpdateXmlName = downloadfile(UPDATE_XML_URL)
+    tree = ET.ElementTree(file=localUpdateXmlName)
     root = tree.getroot()
     build = root[0][1][0]
     VER_TO = build.attrib.get('number')
     patchs = build.findall('patch')
 
+    #读取xml文件，判断本地Android Studio是否能更新
     canUpdate = False
     for patch in patchs:
         from_ver = patch.attrib.get('from')
-        if 0 == cmp(VER_FROME, from_ver):
+        if 0 == cmp(VER_FROM, from_ver):
             canUpdate = True
             break
 
     if False == canUpdate:
-        print "cannot update from your local version:" + VER_FROME
+        print "cannot update from your local version:" + VER_FROM
         return
 
-    patch_path = PATCH_PATH + VER_FROME + '-' + VER_TO + PATCH_PATH2
-    print "Frome:" + VER_FROME
+    #下载URL
+    patch_path = getdownloadurl(VER_FROM, VER_TO, PATCH_PATH2)
+    print "Frome:" + VER_FROM
     print "To:" + VER_TO
     print "Patch URL:" + patch_path
-    print "Starting Download ...\n"
-    #patchFile = downloadfile(patch_path)
+    print "Start Download ...\n"
+
     localpatchfile = url2name(patch_path)
+
+    #下载patch
     urllib.urlretrieve(patch_path, localpatchfile, downloadcb)
+
+    #安装patch
     cmd = "java -classpath " + localpatchfile + " com.intellij.updater.Runner install ."
     os.system(cmd)
+
+    os.remove(localUpdateXmlName)
+    os.remove(localpatchfile)
     pass
 
 if __name__ == '__main__':
