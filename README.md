@@ -1,6 +1,12 @@
 Demo
 ====
 
+2014-08-25
+Android触屏事件演示Demo，演示OnTouchListener、OnClickListener和OnLongClickListener的触发
+
+2014-08-17
+Android触屏事件演示Demo，演示触屏事件在view的onInterceptTouchEvent和onTouchEvent方法中分发的逻辑
+
 2013-09-12
 Android Studio更新工具增加MacOS的支持
 
