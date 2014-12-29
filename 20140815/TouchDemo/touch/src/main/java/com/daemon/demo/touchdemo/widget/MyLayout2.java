@@ -28,7 +28,8 @@ public class MyLayout2 extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        boolean r = super.onTouchEvent(event);
+        boolean r;
+        r = super.onTouchEvent(event);
 //        r = true;
         Log.e(TAG, "onTouchEvent:" + r + " action:" + TouchUtil.actionToString(event.getAction()));
         return r;

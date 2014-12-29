@@ -20,7 +20,8 @@ public class MyLayout extends FrameLayout {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        boolean r = super.onInterceptTouchEvent(ev);
+        boolean r;
+        r= super.onInterceptTouchEvent(ev);
 //        r = true;
         Log.e(TAG, "onInterceptTouchEvent:" + r + " action:" + TouchUtil.actionToString(ev.getAction()));
         return r;
@@ -28,7 +29,8 @@ public class MyLayout extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        boolean r = super.onTouchEvent(event);
+        boolean r;
+        r = super.onTouchEvent(event);
 //        r = true;
         Log.e(TAG, "onTouchEvent:" + r + " action:" + TouchUtil.actionToString(event.getAction()));
         return r;
